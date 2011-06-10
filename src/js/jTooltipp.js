@@ -26,9 +26,9 @@
  */
 (function($)
 {
-    $.fn.tooltip = function(settings, undefined)
+    $.fn.jTooltipp = function(settings, undefined)
     {
-        settings = $.extend({}, $.fn.teliTooltip.defaults, settings);
+        settings = $.extend({}, $.fn.jTooltipp.defaults, settings);
 
         return this.each(function(){
             var $t=$(this);
@@ -50,7 +50,7 @@
                 w = window.innerWidth;
             }
 
-            $t.bind('tt.mouseenter', function(e) {
+            $t.bind('jTooltipp.mouseenter', function(e) {
 
                 m=setMode(e, settings.direction);
 
@@ -65,7 +65,7 @@
 
                 $tc.show(0);
 
-                $('body').bind('tt.mousemove', function(e) {
+                $('body').bind('jTooltipp.mousemove', function(e) {
                     var x = calcX(e);
                     var y = calcY(e);
 
@@ -74,9 +74,9 @@
                         "left": x
                     });
                 });
-            }).bind('tt.mouseleave', function() {
+            }).bind('jTooltipp.mouseleave', function() {
                 $tc.hide(0);
-                $('body').unbind('tt.mousemove');
+                $('body').unbind('jTooltipp.mousemove');
             });
 
             var setMode = function(e, d){
@@ -145,7 +145,7 @@
         });
     };
 
-    $.fn.teliTooltip.defaults = {
+    $.fn.jTooltipp.defaults = {
         direction: null
     };
 
