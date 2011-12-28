@@ -1,5 +1,4 @@
 <?php
-
 /**********************************************************************
  * Copyright (c) 2009 Holger Szuesz, <hszuesz@gmail.com>
  *
@@ -68,9 +67,7 @@ class Mysql_DB {
      * no cloning
      *
      */
-    private function __clone() {
-        //no clone
-    }
+    private function __clone() {}
 
     /**
      * destructor
@@ -137,32 +134,30 @@ class Mysql_DB {
      */
     public function doInsert($arrFieldList, $strTable) {
         if (empty($arrFieldList)) {
-            throw new Exception("Fieldlist is empty!");
+            throw new Exception('Fieldlist is empty!');
         }
 
         if ($strTable == '') {
-            throw new Exception("Table is empty!");
+            throw new Exception('Table is empty!');
         }
 
-        $arrValues = array();
-        $strSql = <<<SQL
-INSERT INTO $strTable SET
-    %s
-SQL;
+        $arrValues  = array();
+        $strSql     = 'INSERT INTO $strTable SET %s';
+
         if (!is_string(array_shift(array_keys($arrFieldList)))) {
             $arrFieldnames = array_shift($arrFieldList);
-            $strSql = str_replace('SET', "\n    (" . implode(',', $arrFieldnames) . ")\nVALUES", $strSql);
+            $strSql = str_replace('SET', '(' . implode(', ', $arrFieldnames) . ') VALUES ', $strSql);
 
             foreach ($arrFieldList as $arrRow) {
-                $arrValues[] = "('" . implode("','", $arrRow) . "')";
+                $arrValues[] = '("' . implode('", "', $arrRow) . '")';
             }
         } else {
             foreach ($arrFieldList as $strFieldName => $mixFieldValue) {
-                $arrValues[] = "$strFieldName = '$mixFieldValue'";
+                $arrValues[] = $strFieldName . ' = "' . $mixFieldValue . '"';
             }
         }
 
-        return $this->execute(sprintf($strSql, implode(",\n    ", $arrValues)));
+        return $this->execute(sprintf($strSql, implode(', ', $arrValues)));
     }
 
     /**
@@ -176,39 +171,34 @@ SQL;
      */
     public function doUpdate($arrFieldList, $strTable, $arrConditions = array()) {
         if (empty($arrFieldList)) {
-            throw new Exception("Fieldlist is empty!");
+            throw new Exception('Fieldlist is empty!');
         }
 
         if ($strTable == '') {
-            throw new Exception("Table is empty!");
+            throw new Exception('Table is empty!');
         }
 
         $arrValues = array();
         $arrSelectors = array();
-        $strSql = <<<SQL
-UPDATE
-    $strTable
-SET
-    %s
-%s
-SQL;
+        $strSql = 'UPDATE ' . $strTable . ' SET %s %s';
+
         foreach ($arrFieldList as $strFieldName => $mixFieldValue) {
-            $arrValues[] = "$strFieldName = '$mixFieldValue'";
+            $arrValues[] = $strFieldName . ' = "' . $mixFieldValue . '"';
         }
 
         $blnFirst = true;
         if (!empty($arrConditions)) {
             foreach ($arrConditions as $strFieldName => $arrConditionParams) {
                 if ($blnFirst) {
-                    $arrSelectors[] = "WHERE\n    $strFieldName {$arrConditionParams['operator']} '{$arrConditionParams['value']}'";
+                    $arrSelectors[] = 'WHERE ' . $strFieldName . ' ' . $arrConditionParams['operator'] . ' "' . $arrConditionParams['value'] . '"';
                     $blnFirst = false;
                 } else {
-                    $arrSelectors[] = "\nAND\n    $strFieldName {$arrConditionParams['operator']} '{$arrConditionParams['value']}' ";
+                    $arrSelectors[] = 'AND ' . $strFieldName . ' ' . $arrConditionParams['operator'] . ' "' . $arrConditionParams['value'] . '" ';
                 }
             }
         }
 
-        return $this->execute(sprintf($strSql, implode(",\n    ", $arrValues), implode('', $arrSelectors)));
+        return $this->execute(sprintf($strSql, implode(', ', $arrValues), implode('', $arrSelectors)));
     }
 
     /**
@@ -226,7 +216,7 @@ SQL;
                 throw new Exception('MySQL Query execute error: ' . mysql_error() . ' with SQL: ' . $strSql);
             }
         } else {
-            echo "<br />Execute SQL:<br /><pre>" . $strSql . "</pre><br />";
+            echo '<br />Execute SQL:<br /><pre>' . $strSql . '</pre><br />';
         }
     }
 
