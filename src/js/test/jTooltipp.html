@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>jTooltipp test file</title>
+
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+        <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+        <script type="text/javascript" src="../jTooltipp.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function(){
+                $('#tl,#tr,#ct').jTooltipp({
+                    direction: 'top'
+                });
+                $('#bl,#br,#cb').jTooltipp();
+                $('#cr').jTooltipp({
+                    direction: 'right'
+                });
+                $('#cl').jTooltipp({
+                    direction: 'left'
+                });
+            });
+        </script>
+
+        <style type="text/css">
+            body {
+                background: gray;
+            }
+
+            .trigger {
+                position: absolute;
+                padding: 5px;
+                background: #ABCDEF;
+                border-radius: 5px;
+                font-size: 16px;
+            }
+
+            #tl {
+                top: 70px;
+                left: 50px;
+            }
+
+            #tr {
+                top: 70px;
+                right: 50px;
+            }
+
+            #bl {
+                bottom: 70px;
+                left: 50px;
+            }
+
+            #br {
+                bottom: 70px;
+                right: 50px;
+            }
+
+            #ct {
+                top: 30%;
+                left: 50%;
+                margin-left: -30px;
+            }
+
+            #cr {
+                top: 50%;
+                right: 30%;
+                margin-top: -10px;
+            }
+
+            #cb {
+                bottom: 30%;
+                left: 50%;
+                margin-left: -42px;
+            }
+
+            #cl {
+                top: 50%;
+                left: 30%;
+                margin-top: -10px;
+            }
+
+            #tooltipp {
+                display: none;
+                position: absolute;
+                width: 110px;
+                padding: 20px;
+                background: #FEDCBA;
+                border: 1px solid #FEDCBA;
+                border-radius: 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="tl" class="trigger" rel="tooltipp">top&nbsp;left</div>
+        <div id="tr" class="trigger" rel="tooltipp">top&nbsp;right</div>
+
+        <div id="ct" class="trigger" rel="tooltipp">center&nbsp;top</div>
+        <div id="cr" class="trigger" rel="tooltipp">center&nbsp;right</div>
+        <div id="cb" class="trigger" rel="tooltipp">center&nbsp;bottom</div>
+        <div id="cl" class="trigger" rel="tooltipp">center&nbsp;left</div>
+
+        <div id="bl" class="trigger" rel="tooltipp">bottom&nbsp;left</div>
+        <div id="br" class="trigger" rel="tooltipp">bottom&nbsp;right</div>
+
+        <div id="tooltipp">
+            This is the tooltipp
+        </div>
+    </body>
+</html>

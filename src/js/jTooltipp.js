@@ -50,41 +50,37 @@
                 w = window.innerWidth;
             }
 
-            $t.bind('jTooltipp.mouseenter', function(e) {
-
-                m=setMode(e, settings.direction);
-
-                var x	= calcX(e);
-                var y	= calcY(e);
-
-                $tc.css({
-                    "position": "absolute",
-                    "top": y + 'px',
-                    "left": x + 'px'
-                });
-
-                $tc.show(0);
-
-                $('body').bind('jTooltipp.mousemove', function(e) {
-                    var x = calcX(e);
-                    var y = calcY(e);
+            $t.on({
+                'mouseenter.jTooltipp': function(e) {
+                    m=setMode(e, settings.direction);
 
                     $tc.css({
-                        "top": y,
-                        "left": x
+                        "position": "absolute",
+                        "top": calcY(e) + 'px',
+                        "left": calcX(e) + 'px'
                     });
-                });
-            }).bind('jTooltipp.mouseleave', function() {
-                $tc.hide(0);
-                $('body').unbind('jTooltipp.mousemove');
+
+                    $tc.show(0);
+
+                    $('body').on('mousemove.jTooltipp', function(e) {
+                        $tc.css({
+                            "top": calcY(e) + 'px',
+                            "left": calcX(e) + 'px'
+                        });
+                    });
+                },
+                'mouseleave.jTooltipp': function() {
+                    $tc.hide(0);
+                    $('body').off('mousemove.jTooltipp');
+                }
             });
 
             var setMode = function(e, d){
-                if(d&&d!='under') {
-                    if(d=='over'&&((e.clientY - ($tc.height() + 20)) > 0)) {
-                        return 'over';
+                if(d&&d!='bottom') {
+                    if(d=='top'&&((e.clientY - ($tc.outerHeight(true) + 20)) > 0)) {
+                        return 'top';
                     }
-                    if(d=='right'&&(e.clientX + $tc.width() + 20) < w) {
+                    if(d=='right'&&(e.clientX + $tc.outerWidth(true) + 20) < w) {
                         return 'right';
                     }
                     if(d=='left') {
@@ -92,15 +88,15 @@
                     }
                 }
 
-                if((e.clientY + $tc.height() + 20) < h) {
-                    return 'under';
+                if((e.clientY + $tc.outerHeight(true) + 20) < h) {
+                    return 'bottom';
                 }
 
-                if(((e.clientY + $tc.height() + 20) >= h) && ((e.clientY - ($tc.height() + 20)) > 0)) {
-                    return 'over';
+                if(((e.clientY + $tc.outerHeight(true) + 20) >= h) && ((e.clientY - ($tc.outerHeight(true) + 20)) > 0)) {
+                    return 'top';
                 }
 
-                if((e.clientX + $tc.width() + 20) < w) {
+                if((e.clientX + $tc.outerWidth(true) + 20) < w) {
                     return 'right';
                 }
 
@@ -108,39 +104,43 @@
             };
 
             var calcX = function(e){
+                var x = (e.pageX - ($tc.outerWidth(true) / 2));
+
                 if(m == 'right') {
-                    return (e.pageX + 20);
+                    x = (e.pageX + 20);
                 }
 
                 if(m == 'left') {
-                    return (e.pageX - ($tc.width() + 20));
+                    x = (e.pageX - ($tc.outerWidth(true) + 20));
                 }
 
-                if((e.pageX + ($tc.width() / 2)) > w) {
-                    return (e.pageX - (($tc.width() / 2) + ((e.pageX + ($tc.width() / 2)) - w + 30)));
-                } else if((e.pageX - ($tc.width() / 2)) < 0) {
-                    return (e.pageX - (($tc.width() / 2) + (e.pageX - ($tc.width() / 2) - 5)));
+                if(x - 5 < 0) {
+                    x = 5;
+                } else if(x + $tc.outerWidth(true) + 5 > w) {
+                    x = w - 5 - $tc.outerWidth(true);
                 }
 
-                return (e.pageX - ($tc.width() / 2));
+                return x;
             };
 
             var calcY = function(e){
+                var y = e.pageY + 20;
+
                 if(m == 'right' || m == 'left') {
-                    if((e.clientY - ($tc.height() / 2)) < 0) {
-                        return (e.pageY - (($tc.height() / 2) + (e.clientY - ($tc.height() / 2) + 5)));
-                    } else if((e.clientY + ($tc.height() / 2)) > h) {
-                        return (e.pageY - (($tc.height() / 2) + ((e.clientY + ($tc.height() / 2)) - h + 30)));
-                    }
-
-                    return (e.pageY - ($tc.height() / 2));
+                    y = e.pageY - ($tc.outerHeight(true) / 2);
                 }
 
-                if(m == 'over') {
-                    return (e.pageY - ($tc.height() + 20));
+                if(m == 'top') {
+                    y = e.pageY - ($tc.outerHeight(true) + 20);
                 }
 
-                return (e.pageY + 20);
+                if(y - 5 < 0) {
+                    y = 5;
+                } else if(y + $tc.outerHeight(true) + 5 > h) {
+                    y = h - 5 - $tc.outerHeight(true);
+                }
+
+                return y;
             };
         });
     };
